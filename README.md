@@ -16,7 +16,7 @@ JavaScript (Fetch API): Para interactuar con el Webhook desde el frontend.
 HTML y CSS: Para la interfaz de usuario básica que activa el proceso de scraping.
 
 # Instalación
-# Requisitos previos
+- Requisitos previos
 Tener Docker instalado.
 
 Tener acceso a un entorno donde se pueda ejecutar n8n (se proporciona una configuración con Docker para facilitar la instalación).
@@ -33,7 +33,7 @@ window.config = {
 };
 
 # Configuración
-# Webhook en n8n
+- Webhook en n8n
 Para que el flujo de trabajo funcione correctamente, configura el Webhook en el editor de n8n:
 
 Crea un Webhook de tipo POST con la URL /scrapping.
