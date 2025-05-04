@@ -1,5 +1,7 @@
 function activarScraping() {
-    fetch(window.config.webhookUrl, {
+  const webhookUrl = window.config.webhookUrl;
+
+    fetch(webhookUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
