@@ -41,7 +41,7 @@ Crea un Webhook de tipo POST con la URL /scrapping.
 Añade un nodo Respond to Webhook al final del flujo para responder con el texto "Respuesta Exitosa" o un mensaje personalizado, si la respuesta es exitosa se enviara la informacion obtenida via WhatsApp.
 
 # Uso
-Inicia el proceso de scraping haciendo clic en el botón en el frontend (con el código de JavaScript que se muestra arriba).
+Inicia el proceso de scraping haciendo clic en el botón en el frontend.
 
 Verifica que la automatización se haya iniciado correctamente desde el mensaje en la interfaz de usuario.
 
