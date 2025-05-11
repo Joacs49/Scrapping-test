@@ -44,3 +44,7 @@ Añade un nodo Respond to Webhook al final del flujo para responder con el texto
 Inicia el proceso de scraping haciendo clic en el botón en el frontend (con el código de JavaScript que se muestra arriba).
 
 Verifica que la automatización se haya iniciado correctamente desde el mensaje en la interfaz de usuario.
+
+# Flujo Utilizado en n8n
+
+<img src="images/Flujo-Scrapping.png" alt="Logo del proyecto" width="1400"/>
