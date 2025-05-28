@@ -1,0 +1,349 @@
+{
+  "name": "Scraping Web",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "scraping",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fcf659d2-355e-4b36-9787-a952f4e77dcb",
+      "name": "Webhook",
+      "webhookId": "2feb1e1f-894f-4b9d-aed2-82e58c3b9074"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "c65789d6-abd5-4f50-b2e5-fafacd6ccbb3",
+      "name": "Wait",
+      "webhookId": "fc19e9b5-b087-4772-809e-33f86a74097a"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Images",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        0
+      ],
+      "id": "cdffb51c-1c66-4bf8-9251-a5c733659998",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1760,
+        0
+      ],
+      "id": "878f9c02-ecda-4293-9658-6bb89b73910d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "finalizado",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        2200,
+        -100
+      ],
+      "id": "e66d2c23-b237-48d8-b7a2-af419b01d642",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "url": "https://caysend.com/torre-de-meca/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "496cefa1-8c7c-4df0-8bb9-f1e3a2825263",
+      "name": "Web a Scrapear"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "Title",
+              "cssSelector": "h1.elementor-heading-title"
+            },
+            {
+              "key": "Information",
+              "cssSelector": "Div[data-id=\"5769e83\"]"
+            },
+            {
+              "key": "Description",
+              "cssSelector": "section[data-id=\"09d3938\"]"
+            },
+            {
+              "key": "Images",
+              "cssSelector": "Div[id=\"gallery-1\"] img",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "c875a700-157d-48f0-9bf7-0673a3bca11b",
+      "name": "Extraer informacion"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Title\": \"{{ $json.Title }}\",\n  \"Information\": \"{{ \n  $json.Information\n    .replace(/\\*/g, '')                // Elimina asteriscos\n    .replace(/\\n/g, ' ')               // Reemplaza saltos de línea por espacios\n    .replace(/\\s+/g, ' ')              // Colapsa espacios múltiples\n    .trim() \n}}\",\n  \"Description\": \"{{ $json.Description.replace(/\\n/g, '') }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        0
+      ],
+      "id": "0fb01b5f-ea3a-48f2-a587-9ffa13bd2d2c",
+      "name": "Formateando la Informacion"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://gate.whapi.cloud/messages/text",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"aeoLdjdUMYDK6gVopDtGoeELUsXf8E7h\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "to",
+              "value": "51915014499"
+            },
+            {
+              "name": "body",
+              "value": "={{ $json.Title + '\\n' + $json.Information + '\\n' + $json.Description }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1100,
+        0
+      ],
+      "id": "3d57f8a5-2f60-456b-a44a-88976d147559",
+      "name": "Enviar a WhatsApp Texto"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://gate.whapi.cloud/messages/image",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\",\n  \"Authorization\": \"aeoLdjdUMYDK6gVopDtGoeELUsXf8E7h\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"to\": \"51915014499\",\n  \"media\": \"{{ $('Split Out').item.json.Images }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2120,
+        140
+      ],
+      "id": "d74c2cab-a7fe-4965-985a-816469b53ed8",
+      "name": "Obtener Imagenes WhatsApp"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f72afbe1-814a-44cf-a69d-00b0c14e73f0",
+              "name": "Images",
+              "value": "={{ $('Extraer informacion').item.json.Images }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "dce67c25-4e03-4f26-ad87-bb07c003b698",
+      "name": "Obtener el Array de Imagenes"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Web a Scrapear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Extraer informacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Obtener Imagenes WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Web a Scrapear": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer informacion": {
+      "main": [
+        [
+          {
+            "node": "Formateando la Informacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formateando la Informacion": {
+      "main": [
+        [
+          {
+            "node": "Enviar a WhatsApp Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar a WhatsApp Texto": {
+      "main": [
+        [
+          {
+            "node": "Obtener el Array de Imagenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Imagenes WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener el Array de Imagenes": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "97a9b200-68a3-44c2-820c-954c508f9112",
+  "meta": {
+    "instanceId": "132b519376444cbfd3b1192e2650b60e63a9da737f5a9f25b6801c6782d91028"
+  },
+  "id": "xo6iK71GzW6njTpU",
+  "tags": []
+}
