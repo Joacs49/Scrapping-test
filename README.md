@@ -45,6 +45,9 @@ Inicia el proceso de scraping haciendo clic en el botón en el frontend.
 
 Verifica que la automatización se haya iniciado correctamente desde el mensaje en la interfaz de usuario.
 
+# Proyecto
+Para poder utilizar el proyecto, importar el archivo Scraping_Web.json desde n8n
+
 # Flujo Utilizado en n8n
 
 <img src="images/Flujo-Scrapping.png" alt="Logo del proyecto" width="1400"/>
